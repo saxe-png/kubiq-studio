@@ -25,6 +25,26 @@ It controls card and star speed, depth, glass, tilt, the title's weight and lock
 the nav glass. Values are remembered in the browser. "Copy settings" puts them on the clipboard; pasting
 them into `defaults` in `src/config.ts` makes them the site's defaults.
 
+## Hero title styles
+
+The title has one current look and five alternatives to compare. In tune mode a bar at the bottom of the
+screen switches between them (keys `0`–`5`; `R` or a second click replays the entrance). `?hero=3` in the
+address opens the page in that style, with or without `?tune`.
+
+| # | Style | What it is |
+| --- | --- | --- |
+| 0 | Solid | Plain white letters. The current default. |
+| 1 | Monolith | 3D block letters receding into the dark; the depth follows the pointer. |
+| 2 | Chrome | Polished metal with a band of light passing over it. |
+| 3 | Stardust | Letters made of stars that gather from across the sky; the pointer scatters them. |
+| 4 | Echo | White letters sending out ripples. |
+| 5 | Signal | Letters drawn in scanlines with a sweeping bar and brief glitches. |
+
+All of them dock into the nav the same way and end as the same white logo. The original black-with-white-
+border look is still available as "Outline" under Title → style in the tuning panel. To make a style the
+default, set `title.style` in `src/config.ts`. The git tag `hero-v1-solid` marks the state before these
+alternatives were added.
+
 ## Content
 
 Texts live in `src/content/sk.ts` (served at `/`) and `src/content/en.ts` (served at `/en/`).
@@ -45,10 +65,11 @@ in the neighbouring `name` field, which is set in the body font.
 | `src/gl/stage.ts` | WebGL canvas and the two-pass render (star glows for the glass, then the scene) |
 | `src/gl/stars.ts`, `shooting-star.ts` | Star field |
 | `src/gl/cards.ts` + `shaders/card.frag.glsl` | Glass card bodies and project images |
-| `src/ui/title.ts` | The wordmark: outline, weight, entrance, docking into the nav |
+| `src/ui/title.ts` | The wordmark: its styles, weight, entrance, docking into the nav |
+| `src/gl/stardust.ts` | The title drawn as stars (the Stardust style) |
 | `src/ui/cards.ts` | Card text (HTML) and keeping it glued to the WebGL cards |
 | `src/ui/nav.ts`, `menu.ts` | Nav bar and full-screen menu |
-| `src/tune/panel.ts` | Tuning panel (only loaded in tune mode) |
+| `src/tune/panel.ts`, `hero-switch.ts` | Tuning panel and hero style switcher (only loaded in tune mode) |
 
 The page has no normal layout that scrolls. The document is an empty spacer that provides scroll length,
 and every card is positioned from the scroll value, both its WebGL body and its HTML text, in the same

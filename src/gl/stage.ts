@@ -2,11 +2,13 @@ import * as THREE from 'three';
 import { viewport } from '../core/viewport.ts';
 import { createSharedCardUniforms, type SharedCardUniforms } from './cards.ts';
 import { createShootingStar, type ShootingStar } from './shooting-star.ts';
+import { createStardust, type Stardust } from './stardust.ts';
 import { createStars, type Stars } from './stars.ts';
 
 // Owns the WebGL canvas and draws a frame in two steps:
 //   1. the star field as wide soft glows into a small texture (what you see through glass),
-//   2. the sharp star field onto the screen, then the glass cards on top, sampling that texture.
+//   2. the sharp star field onto the screen, then the stardust title (when that style is on),
+//      then the glass cards on top, sampling that texture.
 
 /** Camera field of view. Narrow, so tilted cards do not distort much. */
 const FOV = 28;
@@ -15,6 +17,8 @@ export interface Stage {
   renderer: THREE.WebGLRenderer;
   stars: Stars;
   shootingStar: ShootingStar;
+  /** The title as stars, for the "stardust" hero style. */
+  stardust: Stardust;
   /** Scene the card meshes are added to. 1 unit = 1 px, origin at the screen centre, y up. */
   cardScene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -46,6 +50,11 @@ export function createStage(canvas: HTMLCanvasElement, keepPixels: boolean): Sta
   sky.add(stars.mesh, shootingStar.mesh);
   // the sky shaders position everything in screen px themselves, so this camera is never used
   const skyCamera = new THREE.Camera();
+
+  // kept out of the sky scene so its stars are not also drawn as glows behind the glass
+  const stardust = createStardust();
+  const front = new THREE.Scene();
+  front.add(stardust.mesh);
 
   const cardScene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(FOV, 1, 10, 10000);
@@ -80,6 +89,7 @@ export function createStage(canvas: HTMLCanvasElement, keepPixels: boolean): Sta
 
     stars.setSize(w, h);
     shootingStar.setSize(w, h);
+    stardust.setSize(w, h);
   }
 
   resize();
@@ -88,6 +98,7 @@ export function createStage(canvas: HTMLCanvasElement, keepPixels: boolean): Sta
     renderer,
     stars,
     shootingStar,
+    stardust,
     cardScene,
     camera,
     cardUniforms,
@@ -107,6 +118,7 @@ export function createStage(canvas: HTMLCanvasElement, keepPixels: boolean): Sta
       renderer.setRenderTarget(null);
       renderer.clear();
       renderer.render(sky, skyCamera);
+      if (stardust.mesh.visible) renderer.render(front, skyCamera);
       renderer.render(cardScene, camera);
     },
     sample(x, y, w, h) {

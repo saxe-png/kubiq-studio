@@ -53,7 +53,10 @@ export function createPanel(actions: { shootingStar(): void }): void {
   stars.addButton({ title: 'Shooting star now' }).on('click', actions.shootingStar);
 
   const title = pane.addFolder({ title: 'Title', expanded: false });
-  title.addBinding(params.title, 'fill', { label: 'fill', options: { 'Solid white': 'solid', Outline: 'outline' } });
+  title.addBinding(params.title, 'style', {
+    label: 'style',
+    options: { Solid: 'solid', 'Outline (original)': 'outline', Monolith: 'monolith', Chrome: 'chrome', Stardust: 'stardust', Echo: 'echo', Signal: 'signal' },
+  });
   title.addBinding(params.title, 'lockup', { label: 'lockup', options: { 'Two lines': 'two-line', 'One line': 'one-line', Block: 'block' } });
   title.addBinding(params.title, 'letterforms', { label: 'letterforms', options: { Capitals: 'upper', Alternates: 'lower' } });
   title.addBinding(params.title, 'weight', { min: 0, max: 26, step: 0.5, label: 'weight' });

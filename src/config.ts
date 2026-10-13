@@ -3,7 +3,20 @@
 
 export type Lockup = 'two-line' | 'one-line' | 'block';
 export type Letterforms = 'upper' | 'lower';
-export type TitleFill = 'solid' | 'outline';
+export type TitleStyle = 'solid' | 'outline' | 'monolith' | 'chrome' | 'stardust' | 'echo' | 'signal';
+
+/**
+ * The hero title styles offered for comparison: the current look first, then five alternatives.
+ * The number is the key that selects it and the value of ?hero= in the address.
+ */
+export const HERO_STYLES: readonly { style: TitleStyle; name: string; note: string }[] = [
+  { style: 'solid', name: 'Solid', note: 'Plain white letters (the current look)' },
+  { style: 'monolith', name: 'Monolith', note: '3D block letters receding into the dark; the depth follows the pointer' },
+  { style: 'chrome', name: 'Chrome', note: 'Polished metal with a band of light passing over it' },
+  { style: 'stardust', name: 'Stardust', note: 'Letters made of stars that gather from across the sky; the pointer scatters them' },
+  { style: 'echo', name: 'Echo', note: 'White letters sending out ripples' },
+  { style: 'signal', name: 'Signal', note: 'Letters drawn in scanlines with a sweeping bar and brief glitches' },
+];
 
 export const defaults = {
   scroll: {
@@ -25,14 +38,14 @@ export const defaults = {
     shootMax: 40,
   },
   title: {
-    /** 'solid': white letters. 'outline': black letters with a white border. */
-    fill: 'solid' as TitleFill,
+    /** The look of the hero title; see HERO_STYLES. 'outline' is the original black-with-white-border look. */
+    style: 'solid' as TitleStyle,
     lockup: 'two-line' as Lockup,
     letterforms: 'upper' as Letterforms,
     /** Extra thickness on each side of every stroke, in font units (the natural stroke is 109). */
     weight: 18,
     /** White border in px at full desktop size; it thins automatically on small titles.
-        With a solid fill it is the line that traces the letters during the entrance. */
+        It is also the line that traces the letters during the entrance. */
     border: 2,
   },
   cards: {

@@ -7,7 +7,7 @@ import './styles/menu.css';
 import './styles/cards.css';
 
 import gsap from 'gsap';
-import { emitParamsChange, loadOverrides, onParamsChange, params, tuneMode } from './config.ts';
+import { emitParamsChange, HERO_STYLES, loadOverrides, onParamsChange, params, tuneMode } from './config.ts';
 import en from './content/en.ts';
 import { rocparIssues } from './content/rocpar.ts';
 import sk from './content/sk.ts';
@@ -30,6 +30,10 @@ const content = document.documentElement.lang === 'en' ? en : sk;
 const PLACE_KEY = `kubiq.place:${location.pathname}`;
 
 loadOverrides();
+// ?hero=3 (or ?hero=stardust) opens the page in that hero style, for sharing one to look at.
+const heroParam = new URLSearchParams(location.search).get('hero');
+const heroPick = heroParam === null ? undefined : (HERO_STYLES[Number(heroParam)] ?? HERO_STYLES.find((hero) => hero.style === heroParam));
+if (heroPick) params.title.style = heroPick.style;
 initViewport();
 initPointer();
 
@@ -53,7 +57,7 @@ try {
 const nav = createNav(content);
 const cards = createCardLayer(content, stage, spacer);
 const main = h('main', { id: 'content' }, h('h1', { class: 'sr-only' }, 'KUBIQ STUDIOS'), cards.el);
-const title = createTitle(titleSvg);
+const title = createTitle(titleSvg, stage !== null);
 const scroll = createScroll(params.scroll.smooth);
 
 /** Rises to 1 while the menu is open, so the logo is docked even if the menu was opened at the top. */
@@ -179,10 +183,15 @@ if (startsAtTop) {
 
 let time = 0;
 let velocity = 0;
+/** Debugging: a clock value to show instead of the running one (see __kubiq.renderAt). */
+let heldTime: number | null = null;
+/** Which letter outlines the stardust stars were last placed for. */
+let stardustShape = -1;
 
 function frame(dt: number, scrollPosition: number): number {
   const still = reducedMotion();
-  if (!still) time += dt;
+  if (heldTime !== null) time = heldTime;
+  else if (!still) time += dt;
 
   const previous = currentScroll;
   // phones can overshoot past the ends while rubber-banding
@@ -192,9 +201,9 @@ function frame(dt: number, scrollPosition: number): number {
   updatePointer(dt);
 
   const dock = Math.max(dockProgress(cards.layout, currentScroll), forced.dock);
-  // If the viewer scrolls away before the outline has finished drawing, finish it for them.
+  // If the viewer scrolls away before the entrance has finished, finish it for them.
   if (dock > 0.5) title.skipEntrance();
-  title.update(dock);
+  title.update(dock, time);
   nav.update(dock);
   cards.update(currentScroll, time, dt, velocity);
 
@@ -213,6 +222,25 @@ function frame(dt: number, scrollPosition: number): number {
       fade: sky.fade,
     });
     stage.shootingStar.update(time, dt, params.stars.shootMin, params.stars.shootMax, !still && !document.hidden);
+    if (title.style === 'stardust') {
+      if (stardustShape !== title.shapeVersion) {
+        stardustShape = title.shapeVersion;
+        stage.stardust.setShape(title.shape);
+      }
+      stage.stardust.update({
+        words: title.words,
+        heroScale: title.heroScale,
+        gather: title.arrival,
+        // visible from the moment the stars set off, fading as the title docks and turns solid
+        amount: title.arrival > 0 ? (title.presence / title.arrival) * Math.min(1, title.arrival / 0.06) : 0,
+        time,
+        pointerX: pointer.x,
+        pointerY: pointer.y,
+        pointerOn: still ? 0 : pointer.presence,
+      });
+    } else {
+      stage.stardust.mesh.visible = false;
+    }
     stage.cardUniforms.uTime.value = time;
     stage.cardUniforms.uGlass.value = params.cards.glass;
     stage.cardUniforms.uRadius.value = params.cards.radius;
@@ -235,6 +263,7 @@ gsap.ticker.add((_time, deltaMs) => {
 
 if (tuneMode) {
   void import('./tune/panel.ts').then(({ createPanel }) => createPanel({ shootingStar: () => stage?.shootingStar.launch() }));
+  void import('./tune/hero-switch.ts').then(({ createHeroSwitch }) => createHeroSwitch({ replay: () => title.playEntrance() }));
 
   // Renders frames on demand, so the page can be checked from a tab that is not on screen
   // (browsers stop animation frames there). Not present for normal visitors.
@@ -244,15 +273,22 @@ if (tuneMode) {
       viewport,
       stage,
       cards,
+      title,
       ready: document.fonts.ready.then(() => true),
       /** Apply values changed directly on `params` (what the panel does after every edit). */
       apply: emitParamsChange,
-      /** Go back to following the real scroll position. */
+      gsap,
+      /** Go back to following the real scroll position and the running clock. */
       release() {
         held = null;
+        heldTime = null;
       },
-      /** Draw the page as it looks at `scroll` and keep it there, letting eased motion settle first. */
-      renderAt(options: { scroll?: number; pointer?: { x: number; y: number } | null; steps?: number } = {}) {
+      /**
+       * Draw the page as it looks at `scroll` and keep it there, letting eased motion settle first.
+       * `time` also freezes the clock that drives twinkling, ripples and the like.
+       */
+      renderAt(options: { scroll?: number; time?: number; pointer?: { x: number; y: number } | null; steps?: number } = {}) {
+        if (options.time !== undefined) heldTime = options.time;
         if (options.pointer !== undefined) {
           pointer.active = options.pointer !== null;
           if (options.pointer) Object.assign(pointer, options.pointer);

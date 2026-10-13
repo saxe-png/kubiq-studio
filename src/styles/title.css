@@ -13,24 +13,40 @@
 }
 
 /* Square ends stay square; anything sharper than a right angle is cut off instead of spiking. */
-.title__ring,
-.title__core {
+.title__word {
   stroke-linejoin: miter;
   stroke-miterlimit: 2;
 }
 
-.title__ring {
+/* The layers of a word, back to front (see ui/title.ts). */
+.title__ring,
+.title__core,
+.title__white {
   fill: #fff;
   stroke: #fff;
 }
 
-.title__core {
+.title__back {
   fill: #000;
   stroke: #000;
 }
 
+/* Ripples are true offsets of the letters, so their corners are rounded. */
+.title__echo {
+  fill: none;
+  stroke-linejoin: round;
+}
+
+.title__echo-line {
+  stroke: #fff;
+}
+
+.title__echo-mask {
+  stroke: #000;
+}
+
 /* Before the entrance the outline is not there yet: the letters are only star-less shapes.
-   The script then traces the outline and turns the cores white. */
+   The script then traces the outline and brings the style in. */
 .title:not(.is-drawn) .title__ring {
   fill: none;
 }
