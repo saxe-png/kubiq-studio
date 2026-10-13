@@ -1,0 +1,145 @@
+/* ---------------------------------------------------------------------------
+   PANEL: detail projektu a článok blogu
+   Na počítači sa vysunie sprava, na telefóne zdola cez celú obrazovku.
+--------------------------------------------------------------------------- */
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.68);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s ease, visibility 0s 0.45s;
+}
+.panel-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s ease;
+}
+
+.panel {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 41;
+  width: min(720px, 100vw);
+  display: flex;
+  flex-direction: column;
+  background: #090909;
+  border-left: 1px solid var(--line-strong);
+  transform: translateX(102%);
+  visibility: hidden;
+  transition: transform 0.6s var(--ease), visibility 0s 0.6s;
+}
+.panel.is-open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.6s var(--ease);
+}
+.panel__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px clamp(18px, 3vw, 36px);
+  border-bottom: 1px solid var(--line);
+}
+.panel__scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(22px, 3vw, 40px) clamp(18px, 3vw, 36px) calc(56px + env(safe-area-inset-bottom));
+}
+.panel__title {
+  margin-top: 12px;
+  font-size: clamp(26px, 4vw, 46px);
+}
+.panel__summary {
+  margin-top: 14px;
+  font-size: 18px;
+  color: var(--muted);
+}
+.panel__gallery {
+  display: grid;
+  gap: 10px;
+  margin-top: 26px;
+}
+.panel__gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: grayscale(1);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.panel__block {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 8px 20px;
+  padding-block: 18px;
+  border-top: 1px solid var(--line);
+}
+.panel__block:first-of-type {
+  margin-top: 28px;
+}
+.panel__block h3 {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 5px;
+}
+.panel__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.panel__tech li {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.panel__cta {
+  margin-top: 28px;
+}
+
+.article {
+  max-width: 62ch;
+}
+.article p {
+  margin-top: 1.05em;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #d6d6d2;
+}
+.article h3 {
+  margin-top: 1.9em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+.article__cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  filter: grayscale(1);
+  margin-top: 24px;
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 760px) {
+  .panel {
+    inset: 0;
+    width: 100vw;
+    border-left: 0;
+    transform: translateY(102%);
+  }
+  .panel__block {
+    grid-template-columns: 1fr;
+  }
+}

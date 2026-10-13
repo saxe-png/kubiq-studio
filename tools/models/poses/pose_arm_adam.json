@@ -1,0 +1,5 @@
+{"wrist_flex": 28, "wrist_dev": 0, "elbow_flex": 0,
+ "index": [0, 4, 2], "middle": [16, 22, 10], "ring": [24, 28, 12], "pinky": [28, 30, 12],
+ "index_spread": 7, "middle_spread": 2, "ring_spread": -4, "pinky_spread": -11,
+ "thumb": [14, 6, 8], "thumb_spread": 0,
+ "tris": 56000, "upper_keep": 0.16}

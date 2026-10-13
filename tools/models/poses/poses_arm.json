@@ -1,0 +1,9 @@
+{"tris": 80000, "upper_keep": 0.16,
+ "poses": {
+  "rest":  {"wrist_flex": 28, "index": [0, 4, 2], "middle": [16, 22, 10], "ring": [24, 28, 12], "pinky": [28, 30, 12],
+            "index_spread": 7, "middle_spread": 2, "ring_spread": -4, "pinky_spread": -11, "thumb": [14, 6, 8]},
+  "idle":  {"wrist_flex": 32, "index": [6, 10, 5], "middle": [22, 28, 13], "ring": [29, 33, 14], "pinky": [33, 35, 14],
+            "index_spread": 7, "middle_spread": 2, "ring_spread": -4, "pinky_spread": -11, "thumb": [17, 8, 10]},
+  "reach": {"wrist_flex": 15, "index": [-7, -2, 0], "middle": [9, 14, 7], "ring": [17, 20, 9], "pinky": [21, 23, 10],
+            "index_spread": 6, "middle_spread": 2, "ring_spread": -5, "pinky_spread": -13, "thumb": [8, 3, 4]}
+ }}

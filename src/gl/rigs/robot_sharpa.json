@@ -1,0 +1,436 @@
+{
+ "root": "robot",
+ "tip": "tip",
+ "joints": {
+  "right_thumb_CMC_FE": {
+   "node": "J_right_thumb_CMC_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.1745,
+    1.9199
+   ]
+  },
+  "right_thumb_CMC_AA": {
+   "node": "J_right_thumb_MC",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_thumb_MCP_FE": {
+   "node": "J_right_thumb_MCP_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.5236,
+    1.3963
+   ]
+  },
+  "right_thumb_MCP_AA": {
+   "node": "J_right_thumb_PP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_thumb_IP": {
+   "node": "J_right_thumb_DP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.7453
+   ]
+  },
+  "right_index_MCP_FE": {
+   "node": "J_right_index_MCP_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.174533,
+    1.5708
+   ]
+  },
+  "right_index_MCP_AA": {
+   "node": "J_right_index_PP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_index_PIP": {
+   "node": "J_right_index_MP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.7453
+   ]
+  },
+  "right_index_DIP": {
+   "node": "J_right_index_DP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.3963
+   ]
+  },
+  "right_middle_MCP_FE": {
+   "node": "J_right_middle_MCP_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.174533,
+    1.5708
+   ]
+  },
+  "right_middle_MCP_AA": {
+   "node": "J_right_middle_PP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_middle_PIP": {
+   "node": "J_right_middle_MP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.7453
+   ]
+  },
+  "right_middle_DIP": {
+   "node": "J_right_middle_DP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.3963
+   ]
+  },
+  "right_ring_MCP_FE": {
+   "node": "J_right_ring_MCP_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.174533,
+    1.5708
+   ]
+  },
+  "right_ring_MCP_AA": {
+   "node": "J_right_ring_PP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_ring_PIP": {
+   "node": "J_right_ring_MP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.7453
+   ]
+  },
+  "right_ring_DIP": {
+   "node": "J_right_ring_DP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.3963
+   ]
+  },
+  "right_pinky_CMC": {
+   "node": "J_right_pinky_MC",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    0.2618
+   ]
+  },
+  "right_pinky_MCP_FE": {
+   "node": "J_right_pinky_MCP_VL",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.174533,
+    1.5708
+   ]
+  },
+  "right_pinky_MCP_AA": {
+   "node": "J_right_pinky_PP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    -0.3491,
+    0.3491
+   ]
+  },
+  "right_pinky_PIP": {
+   "node": "J_right_pinky_MP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.7453
+   ]
+  },
+  "right_pinky_DIP": {
+   "node": "J_right_pinky_DP",
+   "axis": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "range": [
+    0.0,
+    1.3963
+   ]
+  }
+ },
+ "poses": {
+  "rest": {
+   "right_index_MCP_FE": 0.16,
+   "right_index_PIP": 0.22,
+   "right_index_DIP": 0.14,
+   "right_middle_MCP_FE": 0.55,
+   "right_middle_PIP": 0.65,
+   "right_middle_DIP": 0.35,
+   "right_ring_MCP_FE": 0.75,
+   "right_ring_PIP": 0.8,
+   "right_ring_DIP": 0.4,
+   "right_pinky_CMC": 0.1,
+   "right_pinky_MCP_FE": 0.85,
+   "right_pinky_PIP": 0.85,
+   "right_pinky_DIP": 0.45,
+   "right_thumb_CMC_FE": 0.45,
+   "right_thumb_MCP_FE": 0.25,
+   "right_thumb_IP": 0.25
+  },
+  "idle": {
+   "right_index_MCP_FE": 0.24,
+   "right_index_PIP": 0.32,
+   "right_index_DIP": 0.2,
+   "right_middle_MCP_FE": 0.64,
+   "right_middle_PIP": 0.74,
+   "right_middle_DIP": 0.42,
+   "right_ring_MCP_FE": 0.82,
+   "right_ring_PIP": 0.88,
+   "right_ring_DIP": 0.46,
+   "right_pinky_CMC": 0.14,
+   "right_pinky_MCP_FE": 0.92,
+   "right_pinky_PIP": 0.92,
+   "right_pinky_DIP": 0.52,
+   "right_thumb_CMC_FE": 0.52,
+   "right_thumb_MCP_FE": 0.32,
+   "right_thumb_IP": 0.32
+  },
+  "reach": {
+   "right_index_MCP_FE": 0.02,
+   "right_index_PIP": 0.04,
+   "right_index_DIP": 0.03,
+   "right_middle_MCP_FE": 0.4,
+   "right_middle_PIP": 0.48,
+   "right_middle_DIP": 0.26,
+   "right_ring_MCP_FE": 0.6,
+   "right_ring_PIP": 0.66,
+   "right_ring_DIP": 0.34,
+   "right_pinky_CMC": 0.08,
+   "right_pinky_MCP_FE": 0.72,
+   "right_pinky_PIP": 0.74,
+   "right_pinky_DIP": 0.4,
+   "right_thumb_CMC_FE": 0.34,
+   "right_thumb_MCP_FE": 0.16,
+   "right_thumb_IP": 0.14
+  }
+ }
+}

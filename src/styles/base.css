@@ -1,0 +1,179 @@
+/* ---------------------------------------------------------------------------
+   ZÁKLAD: farby, písma, reset
+   Celý web je čiernobiely. Farba existuje iba v 3D scéne na úvode.
+
+   PÍSMO: zadanie žiadalo font podobný „Rocpar“. Rocpar je platený font
+   (Creative Fabrica) a nemá zaručenú slovenskú diakritiku, preto je použitý
+   voľne dostupný Unbounded (Google Fonts, licencia OFL) – široký, výrazný,
+   moderný a s kompletnou slovenčinou. Na bežný text slúži Manrope.
+   Písma sú uložené priamo v projekte (balíky @fontsource), nesťahujú sa
+   z Google, takže netreba riešiť súhlas návštevníka.
+   Zmena písma: uprav --font-display / --font-body nižšie a importy v main.js.
+--------------------------------------------------------------------------- */
+
+:root {
+  --bg: #050505;
+  --fg: #f4f4f1;
+  --muted: #a6a6a1;
+  --dim: #74746f;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.34);
+  --surface: #0b0b0b;
+  --surface-2: #151515;
+
+  --font-display: 'Unbounded Variable', 'Unbounded', 'Arial Black', system-ui, sans-serif;
+  --font-body: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --gutter: clamp(18px, 4.4vw, 64px);
+  --max: 1360px;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --header-h: 68px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Na úvode a počas prechodu sa stránka neposúva. */
+body.is-loading,
+body.is-intro,
+body.is-transition,
+body.is-locked {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+figure {
+  margin: 0;
+}
+ul {
+  padding: 0;
+  list-style: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Plátno s 3D scénou leží pod všetkým ostatným. Výška „lvh“ sa na telefóne
+   nemení pri schovaní adresného riadka, takže sa scéna zbytočne neprekresľuje. */
+#gl {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100lvh;
+  display: block;
+  z-index: 0;
+}
+
+#flash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.noscript {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
