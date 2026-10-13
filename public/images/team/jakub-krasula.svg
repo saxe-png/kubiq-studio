@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2a"/><stop offset="1" stop-color="#0e0e0e"/></linearGradient></defs>
-  <rect width="800" height="1000" fill="url(#g)"/>
-  <text x="400" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="250" letter-spacing="-8" fill="#fff" fill-opacity="0.9">JK</text>
-  <text x="400" y="930" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="6" fill="#fff" fill-opacity="0.5">MIESTO NA FOTKU · 4 : 5</text>
-</svg>

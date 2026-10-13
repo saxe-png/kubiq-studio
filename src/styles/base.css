@@ -1,35 +1,29 @@
-/* ---------------------------------------------------------------------------
-   ZÁKLAD: farby, písma, reset
-   Celý web je čiernobiely. Farba existuje iba v 3D scéne na úvode.
-
-   PÍSMO: zadanie žiadalo font podobný „Rocpar“. Rocpar je platený font
-   (Creative Fabrica) a nemá zaručenú slovenskú diakritiku, preto je použitý
-   voľne dostupný Unbounded (Google Fonts, licencia OFL) – široký, výrazný,
-   moderný a s kompletnou slovenčinou. Na bežný text slúži Manrope.
-   Písma sú uložené priamo v projekte (balíky @fontsource), nesťahujú sa
-   z Google, takže netreba riešiť súhlas návštevníka.
-   Zmena písma: uprav --font-display / --font-body nižšie a importy v main.js.
---------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Rocpar';
+  src: url('../assets/fonts/rocpar.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: block;
+}
 
 :root {
-  --bg: #050505;
-  --fg: #f4f4f1;
-  --muted: #a6a6a1;
-  --dim: #74746f;
-  --line: rgba(255, 255, 255, 0.14);
-  --line-strong: rgba(255, 255, 255, 0.34);
-  --surface: #0b0b0b;
-  --surface-2: #151515;
-
-  --font-display: 'Unbounded Variable', 'Unbounded', 'Arial Black', system-ui, sans-serif;
-  --font-body: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
-
-  --gutter: clamp(18px, 4.4vw, 64px);
-  --max: 1360px;
-  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
-  --header-h: 68px;
-
+  --fg: #fff;
+  --dim: rgb(255 255 255 / 0.64);
+  --faint: rgb(255 255 255 / 0.4);
+  --line: rgb(255 255 255 / 0.14);
+  --sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+  --display: 'Rocpar', 'Geist Variable', sans-serif;
+  --bar: 64px;
+  --pad: 28px;
   color-scheme: dark;
+}
+
+@media (max-width: 859px) {
+  :root {
+    --bar: 56px;
+    --pad: 18px;
+  }
 }
 
 *,
@@ -39,71 +33,45 @@
 }
 
 html {
+  background: #000;
   -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 12px);
+  scrollbar-color: #2a2a2a #000;
+  scrollbar-width: thin;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: #000;
   color: var(--fg);
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.6;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Na úvode a počas prechodu sa stránka neposúva. */
-body.is-loading,
-body.is-intro,
-body.is-transition,
-body.is-locked {
-  overflow: hidden;
+/* Rocpar. It is unicase: capitals and lowercase are two sets of the same-height letters, and the
+   whole site uses one set at a time (switchable in the tuning panel). */
+.rp {
+  font-family: var(--display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-h1,
-h2,
-h3,
-p,
-ul,
-figure {
-  margin: 0;
-}
-ul {
-  padding: 0;
-  list-style: none;
-}
-img {
-  display: block;
-  max-width: 100%;
-}
-a {
-  color: inherit;
-}
-button,
-input,
-textarea {
-  font: inherit;
-  color: inherit;
-}
-button {
-  cursor: pointer;
-  background: none;
-  border: 0;
-  padding: 0;
+[data-forms='lower'] .rp {
+  text-transform: lowercase;
 }
 
 :focus-visible {
-  outline: 2px solid var(--fg);
-  outline-offset: 3px;
+  outline: 1px solid #fff;
+  outline-offset: 4px;
 }
 
 ::selection {
-  background: var(--fg);
-  color: var(--bg);
+  background: #fff;
+  color: #000;
 }
 
 .sr-only {
@@ -113,67 +81,82 @@ button {
   margin: -1px;
   padding: 0;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }
 
-.display {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
-  text-transform: uppercase;
-}
-
-.eyebrow {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Plátno s 3D scénou leží pod všetkým ostatným. Výška „lvh“ sa na telefóne
-   nemení pri schovaní adresného riadka, takže sa scéna zbytočne neprekresľuje. */
-#gl {
-  position: fixed;
-  inset: 0 auto auto 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100lvh;
-  display: block;
-  z-index: 0;
-}
-
-#flash {
+noscript {
   position: fixed;
   inset: 0;
-  z-index: 60;
-  background: #fff;
-  opacity: 0;
+  display: grid;
+  place-content: center;
+  padding: 24px;
+  text-align: center;
+  color: var(--dim);
+}
+
+/* The WebGL canvas: stars and card bodies. Sized to the tall viewport so a phone's sliding
+   address bar never resizes it. */
+#gl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+}
+
+/* Invisible rulers for the two viewport heights (see core/viewport.ts). */
+.probe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
-.noscript {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: var(--bg);
-  text-align: center;
+.probe--tall {
+  height: 100vh;
+  height: 100lvh;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.probe--short {
+  height: 100vh;
+  height: 100svh;
+}
+
+/* The only thing in normal flow: it gives the page its scroll length. */
+.spacer {
+  position: relative;
+  width: 100%;
+  pointer-events: none;
+}
+
+.anchor {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+/* Tuning panel */
+.tune {
+  position: fixed;
+  top: calc(var(--bar) + 10px);
+  right: 10px;
+  z-index: 100;
+  width: 290px;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - var(--bar) - 20px);
+  max-height: calc(100svh - var(--bar) - 20px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.tune[hidden] {
+  display: none;
 }

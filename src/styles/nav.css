@@ -1,0 +1,77 @@
+/* Glass bar. --in runs 0..1 with the intro scroll and slides it down from above the screen. */
+.bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--bar);
+  padding-right: calc(var(--pad) - 12px);
+  background: rgb(8 8 8 / var(--nav-dark, 0.55));
+  -webkit-backdrop-filter: blur(var(--nav-blur, 18px)) saturate(1.2);
+  backdrop-filter: blur(var(--nav-blur, 18px)) saturate(1.2);
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  transform: translate3d(0, calc((var(--in, 0) - 1) * 102%), 0);
+}
+
+/* Keyboard focus and the open menu always bring it in. */
+.bar:focus-within,
+.bar.is-open {
+  transform: none;
+}
+
+.bar:not(.is-in):not(:focus-within):not(.is-open) {
+  pointer-events: none;
+}
+
+/* Transparent link sitting exactly over the docked logo. */
+.bar__home {
+  display: block;
+  height: 100%;
+  margin-left: calc(var(--pad) - 10px);
+}
+
+.bar__menu {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  place-content: center;
+  gap: 7px;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.bar__menu:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
+
+.bar__line {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: #fff;
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.bar__menu:hover .bar__line:last-child {
+  transform: translateX(-6px);
+}
+
+.bar.is-open .bar__line:first-child {
+  transform: translateY(4.25px) rotate(45deg);
+}
+
+.bar.is-open .bar__line:last-child {
+  transform: translateY(-4.25px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar__line {
+    transition: none;
+  }
+}

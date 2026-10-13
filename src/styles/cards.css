@@ -1,0 +1,199 @@
+/* The text of the floating cards. The glass body, border and image of each card are drawn by
+   WebGL underneath; this layer shares the camera's perspective so both move as one. */
+.cards {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+}
+
+/* Every item is parked at the centre of the screen and moved from there by script. */
+.item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+/* Section labels */
+.label {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.label__index {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.label__title {
+  /* Rocpar letters carry all their spacing on the right; this re-centres the word optically. */
+  padding-left: 0.14em;
+  font-size: clamp(34px, 6vw, 84px);
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.label__note {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* Cards */
+.card {
+  padding: 26px 26px 24px;
+}
+
+.card__index {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.card__title {
+  margin: 22px 0 0;
+  font-size: clamp(21px, 2vw, 29px);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+.card__name {
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.card__text {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--dim);
+}
+
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card__tags li {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.card--project {
+  padding: 0 0 24px;
+}
+
+.card--project > :not(.card__media) {
+  margin-right: 26px;
+  margin-left: 26px;
+}
+
+/* An empty frame: WebGL paints the image here. The <img> stays in the page for its alt text. */
+.card__media {
+  aspect-ratio: 16 / 10;
+  width: 100%;
+}
+
+.card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+.card__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.card--project .card__title {
+  margin-top: 14px;
+}
+
+/* End of the page */
+.end {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.end__line {
+  padding-left: 0.2em;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+}
+
+.end__note {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+/* Tuning aid: outlines the text boxes so they can be compared with the WebGL borders. */
+.cards.is-debug .card {
+  outline: 1px dashed #ff3df2;
+}
+
+/* No WebGL: the cards carry their own glass and show their images directly. */
+.no-gl .card {
+  background: rgb(10 10 10 / 0.72);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.no-gl .card__media img {
+  opacity: 1;
+  filter: grayscale(1);
+}
+
+.no-gl body {
+  background:
+    radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 32%, #ddd 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 84% 71%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 31% 64%, #bbb 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 86%, #eee 50%, transparent 51%),
+    #000;
+  background-attachment: fixed;
+}

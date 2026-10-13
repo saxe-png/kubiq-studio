@@ -1,0 +1,43 @@
+/* The wordmark. Drawn above everything; it starts as the hero title and ends as the nav logo. */
+.title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  overflow: visible;
+  pointer-events: none;
+  shape-rendering: geometricPrecision;
+}
+
+/* Square ends stay square; anything sharper than a right angle is cut off instead of spiking. */
+.title__ring,
+.title__core {
+  stroke-linejoin: miter;
+  stroke-miterlimit: 2;
+}
+
+.title__ring {
+  fill: #fff;
+  stroke: #fff;
+}
+
+.title__core {
+  fill: #000;
+  stroke: #000;
+}
+
+/* Before the entrance the border is not there yet: the letters are only star-less shapes. */
+.title:not(.is-drawn) .title__ring {
+  fill: none;
+}
+
+.title:not(.is-drawn):not(.is-drawing) .title__ring {
+  visibility: hidden;
+}
+
+.title.is-drawing .title__ring path {
+  stroke-dasharray: 1;
+}
