@@ -60,6 +60,18 @@ frame. That is what lets cards move at their own speeds.
 into the two generated files that are committed: `src/assets/fonts/rocpar.woff2` (web font for headings)
 and `src/generated/rocpar.ts` (outlines of the title letters). To regenerate, put the OTF back at that path.
 
+## Deploying
+
+```
+vercel deploy --target preview --scope krasula    # preview link, production untouched
+```
+
+The Vercel team is on the Hobby plan, which only builds commits authored by the team's owner. Vercel
+decides that by comparing the commit's email with the owner's Vercel account. A commit made under any other
+email produces a deployment stuck in the state `BLOCKED` with no build log. This repository's git email is
+therefore set to the Vercel account's address (`git config user.email`). Linking the GitHub account under
+Vercel → Account Settings → Login Connections removes the need for that.
+
 ## Debugging from a background tab
 
 Browsers stop animation frames in tabs that are not visible. In tune mode `window.__kubiq.renderAt({ scroll })`
