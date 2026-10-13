@@ -3,6 +3,7 @@
 
 export type Lockup = 'two-line' | 'one-line' | 'block';
 export type Letterforms = 'upper' | 'lower';
+export type TitleFill = 'solid' | 'outline';
 
 export const defaults = {
   scroll: {
@@ -24,11 +25,14 @@ export const defaults = {
     shootMax: 40,
   },
   title: {
+    /** 'solid': white letters. 'outline': black letters with a white border. */
+    fill: 'solid' as TitleFill,
     lockup: 'two-line' as Lockup,
     letterforms: 'upper' as Letterforms,
     /** Extra thickness on each side of every stroke, in font units (the natural stroke is 109). */
     weight: 18,
-    /** White border in px at full desktop size; it thins automatically on small titles. */
+    /** White border in px at full desktop size; it thins automatically on small titles.
+        With a solid fill it is the line that traces the letters during the entrance. */
     border: 2,
   },
   cards: {

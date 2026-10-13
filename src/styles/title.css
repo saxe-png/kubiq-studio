@@ -29,7 +29,8 @@
   stroke: #000;
 }
 
-/* Before the entrance the border is not there yet: the letters are only star-less shapes. */
+/* Before the entrance the outline is not there yet: the letters are only star-less shapes.
+   The script then traces the outline and turns the cores white. */
 .title:not(.is-drawn) .title__ring {
   fill: none;
 }

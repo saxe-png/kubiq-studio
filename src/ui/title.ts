@@ -4,13 +4,15 @@ import { reducedMotion, viewport } from '../core/viewport.ts';
 import { CAP, GLYPHS, SPACE, STEM } from '../generated/rocpar.ts';
 import { clamp, lerp, smoothstep } from './dom.ts';
 
-// The KUBIQ STUDIOS wordmark: big and outlined in the middle of the screen at the top of the page,
-// shrinking into the nav bar as a small solid-white logo while you scroll through the intro.
+// The KUBIQ STUDIOS wordmark: big in the middle of the screen at the top of the page, shrinking
+// into the nav bar as a small logo while you scroll through the intro.
 //
 // It is drawn from the font's outlines as SVG. Each letter is painted twice: a white shape with a
-// wide white stroke underneath ("ring"), and a black shape with a narrower black stroke on top
-// ("core"). The stroke widens the letter, so the core is a bolder letter and the part of the ring
-// that sticks out around it is the white border.
+// wide white stroke underneath ("ring"), and a second shape with a narrower stroke on top ("core").
+// The stroke widens the letter, so the core is a bolder letter and the part of the ring that sticks
+// out around it is a thin border. While the core is black the title reads as outlined letters; the
+// entrance traces that outline and then floods the core white, which is how the title stays
+// (params.title.fill = 'solid'). With 'outline' the core stays black until the title docks.
 
 const NS = 'http://www.w3.org/2000/svg';
 /** Space between the two lines, in font units. */
@@ -34,6 +36,8 @@ interface Word {
   group: SVGGElement;
   ring: SVGGElement;
   core: SVGGElement;
+  /** Which letters at which weight are currently built, so unchanged words keep their elements. */
+  built: string;
   /** Width of the drawn letters, font units. */
   ink: number;
   /** Extra stroke on each side at hero size, font units. */
@@ -51,7 +55,7 @@ export interface Title {
   layout(): void;
   /** `t`: 0 = hero, 1 = docked in the nav. */
   update(t: number): void;
-  /** Draw the outline on. Resolves when finished. */
+  /** Trace the outline, then (with a solid fill) flood the letters white. Resolves when the tracing is done. */
   playEntrance(): Promise<void>;
   skipEntrance(): void;
   /** Width of the docked logo in px, so the nav can size its home link to match. */
@@ -72,7 +76,7 @@ export function createTitle(root: SVGSVGElement): Title {
     group.append(ring, core);
     root.append(group);
     const slot = { x: 0, y: 0, s: 1 };
-    return { key, group, ring, core, ink: 0, weight: 0, border: 0, hero: { ...slot }, mini: { ...slot }, nav: { ...slot } };
+    return { key, group, ring, core, built: '', ink: 0, weight: 0, border: 0, hero: { ...slot }, mini: { ...slot }, nav: { ...slot } };
   });
   const [kubiq, studios] = words;
 
@@ -82,9 +86,21 @@ export function createTitle(root: SVGSVGElement): Title {
   let lastT = -1;
   let logoWidth = 0;
 
-  /** (Re)creates a word's letters. Emboldening eats the gaps between letters, so they are widened to match. */
-  function build(word: Word, weight: number): void {
+  /** How white the letters' cores are: 0 black (outlined look), 1 white (solid). */
+  const filled = { level: 0 };
+  let flood: gsap.core.Tween | null = null;
+  const wantedFill = (): number => (params.title.fill === 'solid' ? 1 : 0);
+
+  /**
+   * (Re)creates a word's letters. Emboldening eats the gaps between letters, so they are widened
+   * to match. Returns false when nothing changed and the existing elements were kept, which
+   * matters during the entrance: a re-layout must not swap out letters that are being drawn.
+   */
+  function build(word: Word, weight: number): boolean {
     const text = params.title.letterforms === 'upper' ? word.key.toUpperCase() : word.key;
+    const built = `${text}|${weight.toFixed(3)}`;
+    if (word.built === built) return false;
+    word.built = built;
     word.ring.replaceChildren();
     word.core.replaceChildren();
     let x = 0;
@@ -100,6 +116,7 @@ export function createTitle(root: SVGSVGElement): Title {
     }
     word.ink = ink;
     word.weight = weight;
+    return true;
   }
 
   /** The border thins on small titles, where 2 px would swallow the letters' inner gaps. */
@@ -113,18 +130,23 @@ export function createTitle(root: SVGSVGElement): Title {
     // one line of this font is far too small on a phone
     const lockup = params.title.lockup === 'one-line' && w < 640 ? 'two-line' : params.title.lockup;
 
+    let rebuilt = false;
+    const rebuild = (word: Word, w: number): void => {
+      if (build(word, w)) rebuilt = true;
+    };
+
     if (lockup === 'block') {
       // KUBIQ is scaled up to the width of STUDIOS. Its strokes grow with it, so STUDIOS gets
       // more weight until both lines have the same stroke thickness.
       let wk = weight * 0.4;
       let ws = weight;
       for (let i = 0; i < 4; i++) {
-        build(kubiq, wk);
-        build(studios, ws);
+        rebuild(kubiq, wk);
+        rebuild(studios, ws);
         const ratio = (studios.ink + ws * 2) / (kubiq.ink + wk * 2);
         ws = Math.min(34, Math.max(0, ((STEM + wk * 2) * ratio - STEM) / 2));
       }
-      build(studios, ws);
+      rebuild(studios, ws);
       let ss = room / (studios.ink + ws * 2);
       let sk = (ss * (studios.ink + ws * 2)) / (kubiq.ink + wk * 2);
       const gap = LINE_GAP * 0.8;
@@ -139,8 +161,8 @@ export function createTitle(root: SVGSVGElement): Title {
       kubiq.hero = { x: w / 2 - (kubiq.ink * sk) / 2, y: top + CAP * sk, s: sk };
       studios.hero = { x: w / 2 - (studios.ink * ss) / 2, y: top + height(), s: ss };
     } else {
-      build(kubiq, weight);
-      build(studios, weight);
+      rebuild(kubiq, weight);
+      rebuild(studios, weight);
       if (lockup === 'one-line') {
         const total = kubiq.ink + WORD_GAP + weight * 2 + studios.ink;
         const s = Math.min(room / (total + weight * 2), (hh * 0.3) / CAP);
@@ -182,7 +204,10 @@ export function createTitle(root: SVGSVGElement): Title {
       };
     }
 
-    if (entranceDone) finishEntrance();
+    // Letters that were replaced mid-entrance cannot go on being drawn: finish it.
+    if (rebuilt && entrance) finishEntrance();
+    // A tuning change to the fill applies at once, unless the entrance is still getting there.
+    if (entranceDone && !flood) filled.level = wantedFill();
     lastT = -1;
   }
 
@@ -198,8 +223,8 @@ export function createTitle(root: SVGSVGElement): Title {
     const across = 1 - Math.pow(1 - unfold, 3);
     const up = Math.pow(unfold, 3);
 
-    // The core turns from black to white near the end of the first beat, leaving a plain white logo.
-    const white = Math.round(255 * smoothstep(0.75, 1, shrink));
+    // The docked logo is always plain white: an outlined title turns white near the end of the first beat.
+    const white = Math.round(255 * Math.max(filled.level, smoothstep(0.75, 1, shrink)));
     const coreColour = `rgb(${white} ${white} ${white})`;
 
     for (const word of words) {
@@ -231,7 +256,8 @@ export function createTitle(root: SVGSVGElement): Title {
     }
   }
 
-  function finishEntrance(): void {
+  /** `withFlood`: let the white fill pour in (the entrance ran to its end) instead of snapping to it. */
+  function finishEntrance(withFlood = false): void {
     entranceDone = true;
     entrance?.kill();
     entrance = null;
@@ -240,6 +266,23 @@ export function createTitle(root: SVGSVGElement): Title {
     for (const word of words) {
       for (const path of word.ring.children) (path as SVGPathElement).style.strokeDashoffset = '';
     }
+
+    flood?.kill();
+    flood = null;
+    if (withFlood && wantedFill() > filled.level) {
+      flood = gsap.to(filled, {
+        level: wantedFill(),
+        duration: 0.7,
+        ease: 'power2.out',
+        // update() skips frames where the scroll has not changed, so tell it something did
+        onUpdate: () => void (lastT = -1),
+        onComplete: () => void (flood = null),
+      });
+    } else {
+      filled.level = wantedFill();
+      lastT = -1;
+    }
+
     entranceResolve?.();
     entranceResolve = null;
   }
@@ -259,7 +302,7 @@ export function createTitle(root: SVGSVGElement): Title {
       entrance = gsap.fromTo(
         paths,
         { strokeDashoffset: 1 },
-        { strokeDashoffset: 0, duration: 1.25, ease: 'power2.inOut', stagger: 0.045, delay: 0.25, onComplete: finishEntrance },
+        { strokeDashoffset: 0, duration: 1.25, ease: 'power2.inOut', stagger: 0.045, delay: 0.25, onComplete: () => finishEntrance(true) },
       );
     });
   }
@@ -270,7 +313,10 @@ export function createTitle(root: SVGSVGElement): Title {
     layout,
     update,
     playEntrance,
-    skipEntrance: finishEntrance,
+    skipEntrance: () => {
+      // a no-op once the entrance is over, so it never cuts the white fill short
+      if (!entranceDone) finishEntrance();
+    },
     get logoWidth() {
       return logoWidth;
     },
